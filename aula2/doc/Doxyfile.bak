@@ -1,0 +1,89 @@
+/** 
+*  \file enerconsumption.c
+*  \brief Program to manage eletrical enenrgy consumption readings
+* 
+* This program initializes, records and calculates energy consumption data.
+* It includes functions to initialize the data, add readings, and compute total consumption, peaka usage, and cost.
+*
+* \Joana Duarte e Hugo Miranda
+* \data 2025-02-18
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include "enerconsumption.h"
+
+/**
+ * \brief Initializes te energy consumption array
+ * 
+ * \brief vect Array to store energy consumption values.
+*/
+
+void ecInit(float vect[]){
+    for(int i = 0; i < READINGS_PER_DAY; i++)
+        vect[i] = 0.0;
+}
+
+/**
+ *  \brief Adds a consumption reading to the array.
+ *  
+ *  \param vect Array storing energy consumption values.
+ *  \param index Array storing energy consumption values.
+ *  \param value Array storing energy consumption values.
+ */
+
+void ecAdd(float vect[], int index, float value) {
+    if (index >= 0 && index < READINGS_PER_DAY) {
+        vect[index] = value;
+    } else {
+        printf("Invalid index! Must be between 0 and %d\n", READINGS_PER_DAY - 1);
+    }
+}
+
+/**
+ * \brief Computes peak consumption, total, and cost.
+ * 
+ * \param vect Array storing energy consumption values.
+ * \param peak Pointer to store the peak consumption value.
+ * \param dailyvalue Pointer to store the total daily consumption.
+ * \param dailyCost Pointer to sotre the total daily cost.
+ */
+
+
+void dtSum(float vect[], float *peak, float *dailyValue, float *dailyCost) {
+    *peak = 0.0;
+    *dailyValue = 0.0;
+    
+    for (int i = 0; i < READINGS_PER_DAY; i++) {
+        if (vect[i] > *peak) {
+            *peak = vect[i];
+        }
+        *dailyValue += vect[i];
+    }
+    
+    *dailyCost = (*dailyValue) * COST_KWH;
+}
+
+/**
+ * \brief Main function to demonstrate energy consumption calculations.
+ * 
+ * \return int Returns 0 upon successful execution.
+ */
+int main() {
+    float consumption[READINGS_PER_DAY];
+    ecInit(consumption);
+    
+    // Example: Adding some readings
+    ecAdd(consumption, 0, 0.5);
+    ecAdd(consumption, 1, 0.8);
+    ecAdd(consumption, 2, 1.2);
+    
+    float peak = 0.0, dailyValue = 0.0, dailyCost = 0.0;
+    dtSum(consumption, &peak, &dailyValue, &dailyCost);
+    
+    printf("Peak Consumption: %.2f kW/h\n", peak);
+    printf("Total Daily Consumption: %.2f kW/h\n", dailyValue);
+    printf("Total Daily Cost: %.2f EUR\n", dailyCost);
+    
+    return 0;
+}
